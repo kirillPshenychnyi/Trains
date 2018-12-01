@@ -17,10 +17,7 @@ PathFinder::PathFinder(
 	m_source.forEachOutgoingTransition(
 		[&](Transition const& _transition)
 		{
-			m_sourceStationSiblings.emplace_back(
-					&_transition.getArrivalStation()
-				,	&_transition
-			);
+			m_sourceStationSiblings.push_back(&_transition);
 		}
 	);
 }
@@ -44,7 +41,7 @@ PathFinder::findPath()
 	}
 	else
 	{
-		createFinalPath( *common );
+		createFinalPath(*common);
 		dumpPath();
 	}
 }
@@ -73,51 +70,49 @@ PathFinder::initMoreSiblings()
 	}
 	else
 	{
-		previous = m_path.back().first;
+		previous = &m_path.back()->getDepartureStation();
 		toStart = &previous->getOutgoingTransition(0).getArrivalStation();
 	}
 
 	auto const & trains = toStart->getTrains(*previous);
 
-	m_path.emplace_back(toStart, trains[0]);
+	m_path.push_back(trains[0]);
 
 	m_currentDirectSet.clear();
 
 	initSiblings(*toStart);
 }
 
-boost::optional<PathFinder::PathItem> 
+const Transition *
 PathFinder::findCommonStation()
 {
-	for(auto station : m_sourceStationSiblings)
+	for(auto transition : m_sourceStationSiblings)
 	{ 
-		auto it = m_currentDirectSet.find(station.first);
+		auto it = m_currentDirectSet.find(&transition->getArrivalStation());
 
 		if(it != m_currentDirectSet.end())
-			return boost::optional<PathItem>( 
-					PathItem{*it, station.second}
-				);
+			return transition;
 	}
 
-	return boost::none;
+	return nullptr;
 }
 
 void 
-PathFinder::createFinalPath(PathItem const & _commonItem)
+PathFinder::createFinalPath(Transition const & _commonItem)
 {
 	const Station * lastItemBeforeTarget{nullptr};
 
-	StationVector newEthalon{_commonItem};
+	StationVector newEthalon{&_commonItem};
 
 	if(m_path.empty())
-		lastItemBeforeTarget = _commonItem.first;
+		lastItemBeforeTarget = &_commonItem.getDepartureStation();
 	else
 	{
-		lastItemBeforeTarget = m_path.front().first;
+		lastItemBeforeTarget = &m_path.front()->getDepartureStation();
 
-		auto firstItem = m_path.back();
-		auto connection = _commonItem.first->getTrains(*firstItem.first);
-		newEthalon.emplace_back(_commonItem.first, connection[0]);
+		Station const& firstItem = m_path.back()->getDepartureStation();
+		auto connection = _commonItem.getArrivalStation().getTrains(firstItem);
+		newEthalon.push_back(connection[0]);
 	}
 
 	const int nElements = m_path.size();
@@ -127,7 +122,7 @@ PathFinder::createFinalPath(PathItem const & _commonItem)
 
 	auto const & transitionsToTarget = lastItemBeforeTarget->getTrains(m_target);
 
-	newEthalon.emplace_back(lastItemBeforeTarget, transitionsToTarget[0]);
+	newEthalon.push_back(transitionsToTarget[0]);
 
 	m_path = std::move(newEthalon);
 	calculatePathValue();
@@ -140,12 +135,12 @@ PathFinder::dumpPath()
 
 	for(const auto item : m_path)
 	{
-		std::cout << "From Station # " << item.second->getDepartureStation().getId() << std::endl;
-		std::cout << "To Station # " << item.second->getArrivalStation().getId() << std::endl;
-		std::cout << "By train # " << item.second->getTrainId() << std::endl;
-		std::cout << "Departure time: " << item.second->getDepartureTime() << std::endl;
-		std::cout << "Arrival time: " << item.second->getArrivalTime() << std::endl;
-		std::cout << "Price: " << item.second->getPrice() << std::endl;
+		std::cout << "From Station # " << item->getDepartureStation().getId() << std::endl;
+		std::cout << "To Station # " << item->getArrivalStation().getId() << std::endl;
+		std::cout << "By train # " << item->getTrainId() << std::endl;
+		std::cout << "Departure time: " << item->getDepartureTime() << std::endl;
+		std::cout << "Arrival time: " << item->getArrivalTime() << std::endl;
+		std::cout << "Price: " << item->getPrice() << std::endl;
 		std::cout << std::endl;
 	}
 
@@ -164,8 +159,8 @@ PathFinder::calculatePathValue()
 
 	for(const auto item : m_path)
 	{
-		ScheduleTime const& departureTime = item.second->getDepartureTime();
-		ScheduleTime const& arrivalTime = item.second->getArrivalTime();
+		ScheduleTime const& departureTime = item->getDepartureTime();
+		ScheduleTime const& arrivalTime = item->getArrivalTime();
 
 		if(previousArrival)
 		{
@@ -175,7 +170,7 @@ PathFinder::calculatePathValue()
 
 		previousArrival = &arrivalTime;
 		inPath += departureTime - arrivalTime;
-		totalPrice += item.second->getPrice();
+		totalPrice += item->getPrice();
 	}
 	
 	// Price formula: TIME * 0.3 + PRICE * 0.7

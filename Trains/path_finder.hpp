@@ -14,9 +14,9 @@ class PathFinder
 {
 	using StationsSet = std::unordered_set<const Station *>;
 
-	using PathItem = std::pair<const Station*, const Transition*>;
+//	using PathItem = std::pair<const Station*, const Transition*>;
 
-	using StationVector = std::vector<PathItem>;
+	using StationVector = std::vector<const Transition*>;
 
 public:
 
@@ -32,9 +32,9 @@ private:
 
 	void initMoreSiblings();
 
-	boost::optional<PathItem> findCommonStation();
+	const Transition* findCommonStation();
 
-	void createFinalPath(PathItem const& _coomonItem);
+	void createFinalPath(Transition const& _coomonItem);
 
 	void dumpPath();
 
