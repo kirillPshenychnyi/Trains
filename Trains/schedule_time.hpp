@@ -19,7 +19,10 @@ struct ScheduleTime
 
 	friend std::ostream& operator<<(std::ostream& _os, ScheduleTime const& _time);  
 
-	friend ScheduleTime operator - (ScheduleTime const& _lhs, ScheduleTime const& _rhs);
+	static ScheduleTime calculateDifferance(
+			ScheduleTime const& _departure
+		,	ScheduleTime const& _arrival
+	);
 
 	ScheduleTime & operator += (ScheduleTime const& _rhs);
 
@@ -49,7 +52,10 @@ operator<< (std::ostream & _os, ScheduleTime const& _time)
 
 inline
 ScheduleTime 
-operator - (ScheduleTime const& _lhs, ScheduleTime const& _rhs)
+ScheduleTime::calculateDifferance(	
+		ScheduleTime const& _departure
+	,	ScheduleTime const& _arrival
+)
 {
 	static const short HOURS_IN_DAY{24};
 
@@ -57,18 +63,18 @@ operator - (ScheduleTime const& _lhs, ScheduleTime const& _rhs)
 	short minutes{0};
 
 	// That means the arrival is on the nextDay
-	if(_rhs.m_hour <= _lhs.m_hour) 
-		hours = 24 - _lhs.m_hour + _rhs.m_hour;
+	if(_departure.m_hour >= _arrival.m_hour) 
+		hours = 24 - _departure.m_hour + _arrival.m_hour;
 	else 
-		hours = _rhs.m_hour - _lhs.m_hour;
+		hours = _arrival.m_hour - _departure.m_hour;
 
-	if(_rhs.m_minutes < _lhs.m_minutes)
+	if(_departure.m_minutes > _arrival.m_minutes)
 	{
 		hours--;
-		minutes = _rhs.m_minutes + ScheduleTime::MINUTES_IN_HOUR - _lhs.m_minutes;
+		minutes = _arrival.m_minutes + ScheduleTime::MINUTES_IN_HOUR - _departure.m_minutes;
 	}
 	else 
-		minutes = _rhs.m_minutes - _lhs.m_minutes;
+		minutes = _arrival.m_minutes - _departure.m_minutes;
 
 	return ScheduleTime(hours, minutes);
 }

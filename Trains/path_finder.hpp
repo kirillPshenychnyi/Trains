@@ -14,8 +14,6 @@ class PathFinder
 {
 	using StationsSet = std::unordered_set<const Station *>;
 
-//	using PathItem = std::pair<const Station*, const Transition*>;
-
 	using StationVector = std::vector<const Transition*>;
 
 public:

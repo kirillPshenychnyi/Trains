@@ -105,7 +105,7 @@ PathFinder::createFinalPath(Transition const & _commonItem)
 	StationVector newEthalon{&_commonItem};
 
 	if(m_path.empty())
-		lastItemBeforeTarget = &_commonItem.getDepartureStation();
+		lastItemBeforeTarget = &_commonItem.getArrivalStation();
 	else
 	{
 		lastItemBeforeTarget = &m_path.front()->getDepartureStation();
@@ -163,13 +163,17 @@ PathFinder::calculatePathValue()
 		ScheduleTime const& arrivalTime = item->getArrivalTime();
 
 		if(previousArrival)
-		{
 			//transfer time
-			inPath += departureTime - *previousArrival;
-		}
+			inPath += ScheduleTime::calculateDifferance(*previousArrival, departureTime);
 
 		previousArrival = &arrivalTime;
-		inPath += departureTime - arrivalTime;
+		
+		inPath += 
+			ScheduleTime::calculateDifferance( 
+					departureTime
+				,	arrivalTime
+			);
+
 		totalPrice += item->getPrice();
 	}
 	
