@@ -19,10 +19,10 @@ Station::addOutcomingTransition(Transition const & _transition)
 {
 	Station const& targetStation = _transition.getArrivalStation();
 
-	auto it = m_departures2Trains.find(&targetStation);
+	auto it = m_arrivals2Trains.find(&targetStation);
 
-	if(it == m_departures2Trains.end())
-		m_departures2Trains.emplace(&targetStation, Trains({&_transition}));
+	if(it == m_arrivals2Trains.end())
+		m_arrivals2Trains.emplace(&targetStation, Trains({&_transition}));
 	else 
 		it->second.push_back(&_transition);
 
@@ -50,14 +50,25 @@ Transition const & Station::getOutgoingTransition(int _idx) const
 	return *m_outcomingTransitions.at(_idx);
 }
 
-Station::Trains const & 
-Station::getTrains(Station const& _departure) const
+void
+Station::forEachTrainThatLeadsTo(
+		Station const& _arrival
+	,	TransitionCallback _callBack
+	,	std::function<bool(Transition const&)> _stopFunction
+) const
 {
-	auto trains = m_departures2Trains.find(&_departure);
+	auto trains = m_arrivals2Trains.find(&_arrival);
 
-	assert(trains != m_departures2Trains.end());
+	if(trains != m_arrivals2Trains.end())
+	{
+		for(auto transition : trains->second)
+		{
+			_callBack(*transition);
 
-	return trains->second;
+			if(_stopFunction(*transition))
+				return;
+		}
+	}
 }
 
 }

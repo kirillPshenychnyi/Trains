@@ -48,8 +48,8 @@ private:
 
 	const int m_trainId;
 
-	Station const& m_arrivalStation;
 	Station const& m_departureStation;
+	Station const& m_arrivalStation;
 };
 
 inline ScheduleTime const&

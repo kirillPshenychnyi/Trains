@@ -15,8 +15,8 @@ Transition::Transition(
 	,	m_arrivalTime(_arrivalTime)
 	,	m_price(_price)
 	,	m_trainId(_trainId)
-	,	m_arrivalStation(_arrivalStation)
 	,	m_departureStation(_departureStation)
+	,	m_arrivalStation(_arrivalStation)
 {
 }
 

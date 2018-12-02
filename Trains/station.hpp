@@ -1,3 +1,6 @@
+#ifndef __STATION_HPP__
+#define __STATION_HPP__
+
 #include <boost\noncopyable.hpp>
 
 #include <memory>
@@ -19,6 +22,8 @@ class Station
 public:
 
 	using Ptr = std::unique_ptr<Station>;
+
+	using TransitionCallback = std::function<void(Transition const&)>;
 
 	struct Comparator
 	{
@@ -62,8 +67,6 @@ private:
 
 	using Arrivals2Trains = std::unordered_map<const Station*, Trains>;
 
-	using TransitionCallback = std::function<void(Transition const&)>;
-
 public:	
 
 	explicit Station(int _id);
@@ -81,13 +84,18 @@ public:
 
 	int getId() const;
 
-	Trains const& getTrains(Station const& _departure) const;
+	void forEachTrainThatLeadsTo(
+			Station const& _departure
+		,	TransitionCallback _callBack
+		,	std::function<bool(Transition const&)> _stopFunction
+			= []( Transition const& ) {return false;}
+	) const;
 
 private:
 
 	const int m_id;
 
-	Arrivals2Trains m_departures2Trains;
+	Arrivals2Trains m_arrivals2Trains;
 
 	Transitions m_incomingTransitions;
 	Transitions m_outcomingTransitions;
@@ -112,3 +120,5 @@ Station::getIncomingTransitionsSize() const
 }
 
 }
+
+#endif // __STATION_HPP__

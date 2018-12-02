@@ -19,7 +19,7 @@ struct ScheduleTime
 
 	friend std::ostream& operator<<(std::ostream& _os, ScheduleTime const& _time);  
 
-	static ScheduleTime calculateDifferance(
+	static ScheduleTime calculateDifference(
 			ScheduleTime const& _departure
 		,	ScheduleTime const& _arrival
 	);
@@ -52,7 +52,7 @@ operator<< (std::ostream & _os, ScheduleTime const& _time)
 
 inline
 ScheduleTime 
-ScheduleTime::calculateDifferance(	
+ScheduleTime::calculateDifference(	
 		ScheduleTime const& _departure
 	,	ScheduleTime const& _arrival
 )

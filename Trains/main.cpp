@@ -39,34 +39,62 @@ private:
 	std::ifstream m_fstream;
 };
 
-int main()
+int main(int argc, char* argv[])
 {
-	StreamWrapper wrapper("e:\\Education\\programming\\c++ projects\\trains\\Debug\\data.xml");
+	static const int argsSize = 4;
+	static const char * const usage = "Usage <data_path> <departure> <arrival>";
+
+	if(argc != argsSize)
+	{ 
+		std::cout << usage;
+		return -1;
+	}
+
+	StreamWrapper wrapper(argv[1]);
 
 	if(!wrapper.isOpen())
-		return 0;
+	{ 
+		std::cout << "Failed to open file";
+		return -1;
+	}
 
 	RoadAnalyzer::Controller cnt;
 
 	try 
 	{
+		int departureStationId = std::stoi(argv[2]);
+		int arrivalStationId = std::stoi(argv[3]);
+
 		RoadAnalyzer::XmlReader reader(cnt);
 		reader.read(wrapper.takeStream());
 
 		RoadAnalyzer::Dumper dumper(std::cout);
 		dumper.dump(cnt);
 
-		//1981 to 1921
-		RoadAnalyzer::PathFinder finder(
-				*cnt.getStation(1981)
-			,	*cnt.getStation(1921)
-		);
+		auto departureStation = cnt.getStation(departureStationId);
+		auto arrivalStation = cnt.getStation(arrivalStationId);
+
+		if(!departureStation || !arrivalStationId)
+		{
+			std::cout << "Unknown station(s)";
+			return -1;
+		}
+
+		RoadAnalyzer::PathFinder finder(*departureStation, *arrivalStation);
 
 		finder.search();
+
+		std::cout << "\tCHEAPEST" << std::endl;
+
+		finder.dumpCheapestPath();
 	}
 	catch(boost::property_tree::xml_parser_error ex)
 	{
 		std::cout << ex.what();
+	}
+	catch(std::invalid_argument ex)
+	{
+		std::cout << "Wrong station ids" << std::endl;
 	}
 
 	return 0;
