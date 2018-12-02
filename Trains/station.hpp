@@ -65,8 +65,6 @@ private:
 
 	using Trains = std::vector<const Transition*>;
 
-	using Arrivals2Trains = std::unordered_map<const Station*, Trains>;
-
 public:	
 
 	explicit Station(int _id);
@@ -93,12 +91,9 @@ public:
 
 private:
 
-	const int m_id;
-
-	Arrivals2Trains m_arrivals2Trains;
-
 	Transitions m_incomingTransitions;
 	Transitions m_outcomingTransitions;
+	const int m_id;
 };
 
 inline int 
