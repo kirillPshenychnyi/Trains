@@ -17,15 +17,6 @@ Station::addIncomingTransition(Transition const & _transition)
 void
 Station::addOutcomingTransition(Transition const & _transition)
 {
-	Station const& targetStation = _transition.getArrivalStation();
-
-	auto it = m_arrivals2Trains.find(&targetStation);
-
-	if(it == m_arrivals2Trains.end())
-		m_arrivals2Trains.emplace(&targetStation, Trains({&_transition}));
-	else 
-		it->second.push_back(&_transition);
-
 	m_outcomingTransitions.push_back(&_transition);
 }
 
