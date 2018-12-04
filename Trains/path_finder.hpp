@@ -79,7 +79,6 @@ private:
 
 	StationsSet m_siblings;
 
-	StationsSet m_visitedStations;
 	StationList m_stationsVisitedInCurrentWalk;
 
 	Path m_currentPath;
