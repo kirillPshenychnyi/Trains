@@ -81,7 +81,7 @@ PathFinder::searchPathFromStation(Station const & _station)
 
 		bool isDestanationStation = &arrival == &m_target;
 
-		if(!m_visited.insert(arrival).second)
+		if(!m_stationsVisitedInCurrentWalk.insert(arrival).second)
 			break;
 		
 		if(!isDestanationStation && m_siblings.find(&arrival) == m_siblings.end())
@@ -96,7 +96,7 @@ PathFinder::searchPathFromStation(Station const & _station)
 
 		if(isDestanationStation)
 		{
-			m_visited.clear();
+			m_stationsVisitedInCurrentWalk.clear();
 			if(m_currentPath.m_path.empty() || m_currentPath.m_path.front() != m_firstTransition)
 				m_currentPath.m_path.push_front(m_firstTransition);
 
