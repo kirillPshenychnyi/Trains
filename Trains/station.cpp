@@ -41,25 +41,4 @@ Transition const & Station::getOutgoingTransition(int _idx) const
 	return *m_outcomingTransitions.at(_idx);
 }
 
-void
-Station::forEachTrainThatLeadsTo(
-		Station const& _arrival
-	,	TransitionCallback _callBack
-	,	std::function<bool(Transition const&)> _stopFunction
-) const
-{
-	auto trains = m_arrivals2Trains.find(&_arrival); // looks like undeclared variable
-
-	if(trains != m_arrivals2Trains.end())
-	{
-		for(auto transition : trains->second)
-		{
-			_callBack(*transition);
-
-			if(_stopFunction(*transition))
-				return;
-		}
-	}
-}
-
 }
