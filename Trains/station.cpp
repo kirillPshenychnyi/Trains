@@ -48,7 +48,7 @@ Station::forEachTrainThatLeadsTo(
 	,	std::function<bool(Transition const&)> _stopFunction
 ) const
 {
-	auto trains = m_arrivals2Trains.find(&_arrival);
+	auto trains = m_arrivals2Trains.find(&_arrival); // looks like undeclared variable
 
 	if(trains != m_arrivals2Trains.end())
 	{
