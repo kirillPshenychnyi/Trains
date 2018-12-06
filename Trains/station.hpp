@@ -81,14 +81,7 @@ public:
 	int getIncomingTransitionsSize() const;
 
 	int getId() const;
-
-	void forEachTrainThatLeadsTo(
-			Station const& _departure
-		,	TransitionCallback _callBack
-		,	std::function<bool(Transition const&)> _stopFunction
-			= []( Transition const& ) {return false;}
-	) const;
-
+	
 private:
 
 	Transitions m_incomingTransitions;
