@@ -1,4 +1,4 @@
-#include "Station.hpp" // there are case sensitive OSes, you know
+#include "station.hpp"
 #include "transition.hpp"
 
 namespace RoadAnalyzer {
