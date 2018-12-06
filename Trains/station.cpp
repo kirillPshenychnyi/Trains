@@ -1,4 +1,4 @@
-#include "Station.hpp"
+#include "Station.hpp" // there are case sensitive OSes, you know
 #include "transition.hpp"
 
 namespace RoadAnalyzer {
@@ -48,7 +48,7 @@ Station::forEachTrainThatLeadsTo(
 	,	std::function<bool(Transition const&)> _stopFunction
 ) const
 {
-	auto trains = m_arrivals2Trains.find(&_arrival);
+	auto trains = m_arrivals2Trains.find(&_arrival); // looks like undeclared variable
 
 	if(trains != m_arrivals2Trains.end())
 	{

@@ -64,7 +64,7 @@ ScheduleTime::calculateDifference(
 
 	// That means the arrival is on the nextDay
 	if(_departure.m_hour >= _arrival.m_hour) 
-		hours = 24 - _departure.m_hour + _arrival.m_hour;
+		hours = 24 - _departure.m_hour + _arrival.m_hour; // oh, what about that nice constant you have above?
 	else 
 		hours = _arrival.m_hour - _departure.m_hour;
 
