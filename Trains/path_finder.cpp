@@ -55,7 +55,7 @@ PathFinder::initValidSubtree(Station const & _source)
 		{
 			Station const& departure = _transition.getDepartureStation();
 
-			if(&m_source != &departure && m_siblings.insert(&departure).second)
+			if(&m_source != &departure && m_siblings.insert(&departure).second) // are you sure it's correct insert call?
 			{ 
 				++m_totalWays;
 				initValidSubtree(departure);
