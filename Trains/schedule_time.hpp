@@ -64,7 +64,7 @@ ScheduleTime::calculateDifference(
 
 	// That means the arrival is on the nextDay
 	if(_departure.m_hour >= _arrival.m_hour) 
-		hours = 24 - _departure.m_hour + _arrival.m_hour; // oh, what about that nice constant you have above?
+		hours = HOURS_IN_DAY - _departure.m_hour + _arrival.m_hour; // oh, what about that nice constant you have above?
 	else 
 		hours = _arrival.m_hour - _departure.m_hour;
 
@@ -90,8 +90,8 @@ RoadAnalyzer::ScheduleTime::operator += (ScheduleTime const & _rhs)
 
 	if(m_minutes >= ScheduleTime::MINUTES_IN_HOUR)
 	{
-		int actualMinutes = m_minutes % 60;
-		m_hour += (m_minutes - actualMinutes) / 60;
+		int actualMinutes = m_minutes % MINUTES_IN_HOUR;
+		m_hour += (m_minutes - actualMinutes) / MINUTES_IN_HOUR;
 		m_minutes = actualMinutes;
 	}
 
